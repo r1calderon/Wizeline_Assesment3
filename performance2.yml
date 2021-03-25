@@ -1,0 +1,49 @@
+config:
+  target: "https://api.todoist.com"
+  phases:
+    - duration: 1
+      arrivalRate: 1
+      name: "Phase 1"
+  defaults:
+   headers:
+     Authorization: Bearer {{ $processEnvironment.TOKEN }}
+     Content-type: application/json
+  ##processor: "./myProcessor.js"
+scenarios:
+  - flow:
+      - post: #Create a project
+          url: "/rest/v1/projects"
+          json:
+            name: "Assesment 3"
+          capture: 
+           json: "$.id"
+           as: "projectId"
+      - log: "Current Id is {{ projectId }}"
+      - get:  #Get active tasks
+          url: "/rest/v1/tasks"
+      - post: #Create a new task
+          url: "/rest/v1/tasks"
+          json:
+            content: "task 1"
+            due_string: "tomorrow at 12:00"
+            due_lang: "en"
+            priority: 4
+            project_id: "{{projectId}}"
+          capture:
+           json: "$.id"
+           as: "taskId"
+      - log: "Current task Id is {{ taskId }}"
+      - get:  #Get an active task
+          url: "/rest/v1/tasks/{{ taskId }}"
+      - post: #Updated a task
+          url: "/rest/v1/tasks/{{ taskId }}"
+          json:
+            content: "task updated"
+      - post: #Change a task to completed
+          url: "/rest/v1/tasks/{{ taskId }}/close"
+      - post: #Reopen a task
+          url: "/rest/v1/tasks/{{ taskId }}/reopen"
+      - delete: #Delete a task
+          url: "/rest/v1/tasks/{{ taskId }}"
+  # For more information: https://artillery.io/docs/script-reference/
+# For more information: https://artillery.io/docs/script-reference/

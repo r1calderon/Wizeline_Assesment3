@@ -1,0 +1,17 @@
+{
+  "name": "artillery",
+  "version": "1.0.0",
+  "description": "npm init -y",
+  "main": "index.js",
+  "scripts": {
+    "test1": "artillery run --output results/report.json performance2.yml && artillery report --output results/report.html results/report.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "artillery": "^1.6.2",
+    "faker": "^5.4.0"
+  }
+}
